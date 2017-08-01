@@ -129,7 +129,7 @@ Task.prototype.Run = function (runArg) {
 		            this.state_ = Task.TaskState.TimeIsOut;
 		        }
 		    }).bind(this);
-				this.timeoutObject_ = setTimeout(lTimeoutHandler, this.timeout_ + 3);// 3 - погрешность от исполнения набора операций (времени затраченном на них) (подбиралось экспериментально)
+				this.timeoutObject_ = setTimeout(lTimeoutHandler, this.timeout_ + 3);
 		}
 		this.thisTaskFn_.apply(this, lArguments);
 	}
