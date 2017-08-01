@@ -10,7 +10,8 @@
     "Readme.md",
     "entry.js",
     "src/"
-],
+  ],
+  "repository": "tex0/hi.tasks",
   "author": "tex0",
   "license": "MIT"
 }
