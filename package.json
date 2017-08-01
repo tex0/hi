@@ -1,0 +1,11 @@
+{
+  "name": "hi.tasks",
+  "version": "0.0.1",
+  "description": "Tasks chain builder.",
+  "main": "entry.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "tex0",
+  "license": "MIT"
+}
