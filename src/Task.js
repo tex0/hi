@@ -124,7 +124,7 @@ Task.prototype.Run = function (runArg) {
 	
 	this.Context.task = this;
 	
-	var lArgs = Array.prototype.slice.call(arguments, lSpecialArg = true ? 1 : 0, arguments.length);
+	var lArgs = Array.prototype.slice.call(arguments, lSpecialArg == true ? 1 : 0, arguments.length);
 	var lArguments = [ this.Context ].concat(Array.prototype.slice.call(this.taskArgs_, 0, this.taskArgs_.length)).concat(lArgs);
 	try {
 		this.state_ = Task.TaskState.Runing;
