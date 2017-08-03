@@ -109,15 +109,22 @@ Task.prototype.Next = function (error) {
 Task.prototype.Run = function (runArg) {
 	if (this.state_ === Task.TaskState.Completed)
 		throw new Error('The task can not be started because it already completed.');
-
+	
+	var lSpecialArg = false;
 	if (typeof runArg == 'function')
-		this.awaiting_ = runArg;
+	{
+		this.awaiting_ = runArg;	
+		lSpecialArg = true;
+	}
 	else if (typeof runArg == 'number')
+	{
 		this.SetTimeout(runArg);
+		lSpecialArg = true;
+	}
 	
 	this.Context.task = this;
 	
-	var lArgs = Array.prototype.slice.call(arguments, 1, arguments.length);
+	var lArgs = Array.prototype.slice.call(arguments, lSpecialArg == true ? 1 : 0, arguments.length);
 	var lArguments = [ this.Context ].concat(Array.prototype.slice.call(this.taskArgs_, 0, this.taskArgs_.length)).concat(lArgs);
 	try {
 		this.state_ = Task.TaskState.Runing;
