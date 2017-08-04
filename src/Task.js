@@ -1,4 +1,10 @@
-﻿function Task(taskFn, awaitFn) {
+﻿/** @description Creates an object 'Task'
+* @constructor
+* @param {functoin} taskFn
+* @param {function} awaitFn
+* @public
+*/
+function Task(taskFn, awaitFn) {
 	if (typeof taskFn !== 'function')
 		throw new TypeError("Invalid type of parameter 'taskFn'!");
 	this.thisTaskFn_ = taskFn;
@@ -16,6 +22,7 @@
 
 	this.throuthTimeout_ = false;
 }
+
 Task.prototype = {
 	get Result() { 
 		return this.taskResult_;
@@ -23,9 +30,16 @@ Task.prototype = {
 	set Result(val) {
 		this.taskResult_ = val;
 	},
+	/** @description Gets the task following the current
+	*
+	*/
 	get NextTask() {
 		return this.nextTask_;
 	},
+	/** @description Set up timeout for task job
+	* @param {number} val
+	* @public
+	*/
 	SetTimeout : function (val) {
 		if (val == null || val === undefined)
 			this.timeout_ = 0;
@@ -33,9 +47,13 @@ Task.prototype = {
 			this.timeout_ = val;
 		return this;
 	},
+	/** @description Gets the value of the throuth timeout flag
+	*/
 	get ThrouthTimeout(){ 
 		return this.throuthTimeout_;
 	},
+	/** @description Sets the value of the throuth timeout flag
+	*/
 	set ThrouthTimeout(val) {
 		if (typeof val != 'boolean') throw new TypeError('Setter of \'ThrouthTimeout\': setting value is not a Boolean type');
 		this.throuthTimeout_ = val;
@@ -43,23 +61,37 @@ Task.prototype = {
 	get State(){
 		return this.state_;
 	},
+	/** @description Gets the value of the throuth context flag
+	*/
 	get ThrouthContext() {
 		return this.throuthContext_;
 	},
+	/** @description Sets the value of the throuth context flag
+	*/
 	set ThrouthContext(val) {
 		if (typeof val != 'boolean') throw new TypeError('Setter of \'ThrouthContext\': setting value is not a Boolean type');
 		this.throuthContext_ = val;
 	},
+	/** @description Gets the value context of current task
+	*/
 	get Context() {
 		return this.context_;
 	},
+	/** @description Sets the value of context for current task
+	*/
 	set Context(val) {
 		this.context_ = val;
 	},
+	/** @description Gets the array of arguments for current task
+	*/
 	get Args() {
 		return this.taskArgs_;
 	}
 }
+/** @description Performs the transition to the next task
+* @param {*} [error]
+* @public
+*/
 Task.prototype.Next = function (error) {
 	if (this.state_ !== Task.TaskState.TimeIsOut && this.state_ !== Task.TaskState.Faulted && this.state_ !== Task.TaskState.Failed) {
 		this.state_ = Task.TaskState.Completed;
@@ -106,6 +138,10 @@ Task.prototype.Next = function (error) {
 	this.awaiting_ = null;
 	this.nextTask_ = null;
 }
+/** @description Launches the task for execution
+* @param {*} [runArg]
+* @public
+*/
 Task.prototype.Run = function (runArg) {
 	if (this.state_ === Task.TaskState.Completed)
 		throw new Error('The task can not be started because it already completed.');
@@ -148,6 +184,10 @@ Task.prototype.Run = function (runArg) {
 		return this;
 	}
 }
+/** @description Defines and queues the task following the current
+* @param {*} [nextTask]
+* @public
+*/
 Task.prototype.Continue = function (nextTask) {
 	if (nextTask == null || nextTask === undefined) return this;
 
@@ -169,6 +209,11 @@ Task.prototype.Continue = function (nextTask) {
 
 	return this.nextTask_;
 }
+/** @description Specifies the method for processing the end of a task
+* @param {function} awaitFn
+* @param {boolean} throuth
+* @public
+*/
 Task.prototype.AwaitingEnd = function (awaitFn, throuth) {
 	this.awaiting_ = awaitFn;
 	if (throuth) {
@@ -180,6 +225,11 @@ Task.prototype.AwaitingEnd = function (awaitFn, throuth) {
 	}
 }
 
+/** @description Forms a chain of tasks from a set of functions
+* @param {array} tasks
+* @param {function} awaiting
+* @public
+*/
 Task.Chain = function (tasks, awaiting) {
 	var lFirstTask = null;
 	var lCurrTask = null;
@@ -199,12 +249,23 @@ Task.Chain = function (tasks, awaiting) {
 	}
 	return lFirstTask;
 }
+/** @description Starts a chain of tasks from a set of functions 
+* @param {array} tasks
+* @param {function} awaiting
+* @param {number} timeout
+* @param {boolean} throuthTimeout
+* @public
+*/
 Task.Run = function (tasks, awaiting, timeout, throuthTimeout){
 	var lFirstTask = Task.Chain(tasks, awaiting);
 	lFirstTask.ThrouthTimeout = throuthTimeout;
 	lFirstTask.Run(timeout);
 }
 
+/** @description Set of task state values
+* @constructor
+* @public
+*/
 function TaskState() { }
 TaskState.prototype = {
 	get Runing(){ return 1; },
@@ -214,6 +275,10 @@ TaskState.prototype = {
 	get TimeIsOut() { return 5; }
 }
 
+/** @description Creates an object TaskTimeoutError
+* @constructor
+* @public
+*/
 function TaskTimeoutError(description, timeout){
 	Error.call(this);
 	this.name = "TaskTimeoutError";
@@ -239,6 +304,12 @@ TaskTimeoutError.prototype = {
 Task.TaskState = new TaskState();
 
 module.exports = function (){
+	/**
+	* @property {object} Task
+	*/
 	this.Task = Task;
+	/**
+	* @property {object} TaskTimeoutError
+	*/
 	this.TaskTimeoutError = TaskTimeoutError;
 }
