@@ -6,7 +6,7 @@
 */
 function Task(taskFn, awaitFn) {
 	if (typeof taskFn !== 'function')
-		throw new TypeError("Invalid type of parameter 'taskFn'!");
+		throw new TypeError("Invalid type of parameter 'taskFn'");
 	this.thisTaskFn_ = taskFn;
 	this.taskArgs_ = Array.prototype.slice.call(arguments, 2, arguments.length);
 	this.nextTask_ = null;
@@ -55,7 +55,7 @@ Task.prototype = {
 	/** @description Sets the value of the throuth timeout flag
 	*/
 	set ThrouthTimeout(val) {
-		if (typeof val != 'boolean') throw new TypeError('Setter of \'ThrouthTimeout\': setting value is not a Boolean type');
+		if (typeof val != 'boolean') throw new TypeError("Setter of 'ThrouthTimeout': setting value is not a Boolean type");
 		this.throuthTimeout_ = val;
 	},
 	get State(){
@@ -69,7 +69,7 @@ Task.prototype = {
 	/** @description Sets the value of the throuth context flag
 	*/
 	set ThrouthContext(val) {
-		if (typeof val != 'boolean') throw new TypeError('Setter of \'ThrouthContext\': setting value is not a Boolean type');
+		if (typeof val != 'boolean') throw new TypeError("Setter of 'ThrouthContext': setting value is not a Boolean type");
 		this.throuthContext_ = val;
 	},
 	/** @description Gets the value context of current task
