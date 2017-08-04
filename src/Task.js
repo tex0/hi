@@ -124,11 +124,11 @@ Task.prototype.Next = function (error) {
 			//this.awaiting_ = null;
 		}
 		else {
-			if (this.ThrouthContext === true) {// сквозной контекст
+			if (this.ThrouthContext === true) {
 				this.nextTask_.ThrouthContext = true;
 				this.nextTask_.Context = this.Context;
 			}
-			if (this.ThrouthTimeout === true) {// сквозной таймаут
+			if (this.ThrouthTimeout === true) {
 				this.nextTask_.ThrouthTimeout = true;
 				this.nextTask_.SetTimeout(this.timeout_);
 			}
