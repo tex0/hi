@@ -128,8 +128,7 @@ Task.prototype.Run = function (runArg) {
 	var lArguments = [ this.Context ].concat(Array.prototype.slice.call(this.taskArgs_, 0, this.taskArgs_.length)).concat(lArgs);
 	try {
 		this.state_ = Task.TaskState.Runing;
-		if (this.timeout_ !== undefined && this.timeout_ != null && 
-			typeof this.timeout_ == 'number' && this.timeout_ > 0) {
+		if (this.timeout_ && this.timeout_ > 0) {
 		    var lTimeoutHandler = (function() {
 		        if (this.state_ === Task.TaskState.Completed) return;
 		        if (this.state_ === Task.TaskState.Runing) {
