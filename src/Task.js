@@ -64,15 +64,15 @@ Task.prototype.Next = function (error) {
 	if (this.state_ !== Task.TaskState.TimeIsOut && this.state_ !== Task.TaskState.Faulted && this.state_ !== Task.TaskState.Failed) {
 		this.state_ = Task.TaskState.Completed;
 	}
-	if (this.timeoutObject_ != null && this.timeoutObject_ !== undefined)
+	if (this.timeoutObject_)
 		clearTimeout(this.timeoutObject_);
 	this.thisTaskFn_ = undefined;
 	this.taskArgs_.splice(0, this.taskArgs_.length);
 
 	var lArgs = Array.prototype.slice.call(arguments, 1, arguments.length);
 		
-	if (error != null && error !== undefined) {
-		if (this.awaiting_ !== undefined && this.awaiting_ != null) {
+	if (error) {
+		if (this.awaiting_) {
 			this.awaiting_.call(null, error, this.Context);
 			//this.awaiting_ = null;
 			//this.nextTask_ = null;
@@ -80,14 +80,14 @@ Task.prototype.Next = function (error) {
 	}
 	else if (this.state_ === Task.TaskState.TimeIsOut) {
 		var lError = new TaskTimeoutError("Timeout expired!", this.timeout_); 
-		if (this.awaiting_ !== undefined && this.awaiting_ != null) {
+		if (this.awaiting_) {
 			this.awaiting_.call(null, lError, this.Context);
 			//this.awaiting_ = null;
 			//this.nextTask_ = null;
 		}
 	}
 	else  {
-		if (this.nextTask_ == null || this.nextTask_ === undefined) {
+		if (this.nextTask_) {
 			this.awaiting_.apply(null, [null, this.Context].concat(lArgs));
 			//this.awaiting_ = null;
 		}
@@ -111,13 +111,11 @@ Task.prototype.Run = function (runArg) {
 		throw new Error('The task can not be started because it already completed.');
 	
 	var lSpecialArg = false;
-	if (typeof runArg == 'function')
-	{
+	if (typeof runArg == 'function') {
 		this.awaiting_ = runArg;	
 		lSpecialArg = true;
 	}
-	else if (typeof runArg == 'number')
-	{
+	else if (typeof runArg == 'number') {
 		this.SetTimeout(runArg);
 		lSpecialArg = true;
 	}
@@ -159,7 +157,7 @@ Task.prototype.Continue = function (nextTask) {
 		lNewNextTask = nextTask;
 
 	var lOldNextTask = null;
-	if (this.nextTask_ != null && this.nextTask_ !== undefined) {
+	if (this.nextTask_) {
 		 lOldNextTask = this.nextTask_;
 	}
 	
@@ -172,7 +170,7 @@ Task.prototype.AwaitingEnd = function (awaitFn, throuth) {
 	this.awaiting_ = awaitFn;
 	if (throuth) {
 		var lTask = this.nextTask_;
-		while (lTask !== undefined && lTask != null) {
+		while (lTask) {
 			lTask = lTask.NextTask;
 			lTask.AwaitingEnd(this.awaiting_);
 		}
@@ -198,7 +196,7 @@ Task.Chain = function (tasks, awaiting) {
 	}
 	return lFirstTask;
 }
-Task.Run = function (tasks, awaiting, timeout, throuthTimeout){
+Task.Run = function (tasks, awaiting, timeout, throuthTimeout) {
 	var lFirstTask = Task.Chain(tasks, awaiting);
 	lFirstTask.ThrouthTimeout = throuthTimeout;
 	lFirstTask.Run(timeout);
@@ -206,14 +204,14 @@ Task.Run = function (tasks, awaiting, timeout, throuthTimeout){
 
 function TaskState() { }
 TaskState.prototype = {
-	get Runing(){ return 1; },
-	get Faulted(){ return 2; },
+	get Runing() { return 1; },
+	get Faulted() { return 2; },
 	get Failed() { return 3; },
-	get Completed(){ return 4; },
+	get Completed() { return 4; },
 	get TimeIsOut() { return 5; }
 }
 
-function TaskTimeoutError(description, timeout){
+function TaskTimeoutError(description, timeout) {
 	Error.call(this);
 	this.name = "TaskTimeoutError";
 	this.timeout_ = timeout;
@@ -228,16 +226,16 @@ function TaskTimeoutError(description, timeout){
 }
 TaskTimeoutError.prototype = Object.create(Error.prototype);
 TaskTimeoutError.prototype = {
-	get ExpiredTimeout(){
+	get ExpiredTimeout() {
 		return this.timeout_;
 	},
-	get Description(){
+	get Description() {
 		return this.description_;
 	}
 }
 Task.TaskState = new TaskState();
 
-module.exports = function (){
+module.exports = function () {
 	this.Task = Task;
 	this.TaskTimeoutError = TaskTimeoutError;
 }
