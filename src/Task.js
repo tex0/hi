@@ -27,7 +27,7 @@ Task.prototype = {
 		return this.nextTask_;
 	},
 	SetTimeout : function (val) {
-		if (val == null || val === undefined)
+		if (val)
 			this.timeout_ = 0;
 		else
 			this.timeout_ = val;
